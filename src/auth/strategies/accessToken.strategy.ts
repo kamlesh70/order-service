@@ -24,12 +24,13 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
-    console.log(payload, 'jwt payload');
-    const { sub: userId, email, scopes: roles } = payload;
+    const { sub, role, firstName, lastName, email } = payload;
     return {
-      id: userId,
+      sub,
+      role,
+      firstName,
+      lastName,
       email,
-      roles,
     };
   }
 }

@@ -4,15 +4,56 @@ import { HydratedDocument } from 'mongoose';
 export type CatDocument = HydratedDocument<Customer>;
 
 @Schema()
+export class Address {
+  @Prop({
+    type: String,
+    required: true,
+  })
+  address: string;
+
+  @Prop({
+    type: Boolean,
+    required: false,
+    default: false,
+  })
+  isDefault: boolean;
+}
+
+@Schema({
+  timestamps: true,
+})
 export class Customer {
-  @Prop()
-  name: string;
+  @Prop({
+    type: String,
+    required: true,
+  })
+  userId: string;
 
-  @Prop()
-  age: number;
+  @Prop({
+    type: String,
+    required: true,
+  })
+  firstName: string;
 
-  @Prop()
-  breed: string;
+  @Prop({
+    type: String,
+    required: true,
+  })
+  lastName: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  email: string;
+
+  @Prop({
+    type: [Address],
+    required: false,
+    default: [],
+    _id: false,
+  })
+  address: [Address];
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(Customer);
