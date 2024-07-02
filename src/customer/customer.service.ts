@@ -62,6 +62,12 @@ export class CustomerService {
       if (!customer) {
         throw new BadRequestException('Customer not found !');
       }
+      const exists = customer?.address?.some(
+        (ele) => ele.address === address.address,
+      );
+      if (exists) {
+        throw new BadRequestException('Address already exists !');
+      }
       await this.customerModel.updateOne(
         {
           _id: customerId,

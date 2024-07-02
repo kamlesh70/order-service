@@ -2,13 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 // import * as jwkClient from 'jwks-rsa';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private configService: ConfigService) {
+    function getAccessToken(req) {
+      let token = null;
+
+      if (req && req.cookies) {
+        token = req.cookies['accessToken'];
+      }
+
+      return token;
+    }
+
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: getAccessToken,
       ignoreExpiration: false,
       // secretOrKey: jwkClient.expressJwtSecret({
       //   jwksUri:
@@ -24,6 +34,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
+    console.log(payload, 'testtttttttttttttt');
     const { sub, role, firstName, lastName, email } = payload;
     return {
       sub,
