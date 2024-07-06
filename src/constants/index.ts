@@ -3,3 +3,12 @@ export enum ROLES {
   ADMIN = 'admin',
   MANAGER = 'manager',
 }
+
+export enum PriceTypeEnum {
+  base = 'base',
+  additional = 'additional',
+}
+
+export enum MessageBrokerTopics {
+  product = 'product',
+}
