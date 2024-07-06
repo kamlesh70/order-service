@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Consumer, Kafka } from 'kafkajs';
+import { ProductConsumerService } from './message-consumer/product-consumer.service';
+import { MessageBrokerTopics } from 'src/constants';
 
 @Injectable()
 export class MessageBrokerService {
   private messageConsumer: Consumer;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private productConsumerService: ProductConsumerService,
+  ) {
     const clientId = this.configService.get('messageBroker.CLIENT_ID');
     const brokers = this.configService.get('messageBroker.BROKERS');
     const groupId = this.configService.get('messageBroker.GROUP_ID');
@@ -47,6 +52,18 @@ export class MessageBrokerService {
         console.log(`Received message: ${message.value.toString()}`);
         console.log(topic);
         console.log(partition);
+        switch (topic) {
+          case MessageBrokerTopics.product:
+            this.productConsumerService.createProductCache(
+              message?.value?.toString(),
+              topic,
+              partition,
+            );
+            return;
+          default:
+            console.log(topic, 'Failed to create');
+            return;
+        }
       },
     });
   }
